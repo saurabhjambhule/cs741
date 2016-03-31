@@ -2,7 +2,7 @@
   "name": "Advanced Network Security Assignment",
   "version": "1.0",
   "description": "Blocks malicious post and get requests",
-  "permissions": ["https://*/*", "http://*/*", "webRequest"],
+  "permissions": ["https://*/*", "http://*/*"],
   "background": {
     "scripts": ["background.js"]
   },
