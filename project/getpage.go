@@ -12,6 +12,7 @@ func (p *Page) save() error {
 	return ioutil.WriteFile(filename, p.Body, 0600)
 }
 
+//get the html file form disk.
 func loadPage(title string) (*Page, error) {
 	filename := title
 	body, err := ioutil.ReadFile(filename)
