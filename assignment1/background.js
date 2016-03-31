@@ -50,18 +50,25 @@ function init_ZKP(url)
   send_ChallengeResponse(); 
 }
 
+function find_name_value_in_arr(nameStr, valueStr, arr){
+  for(i = 0; i < arr.length ; i++) if(arr[i].name == nameStr && arr[i].value == valueStr) return true;
+  return false;
+}
+
 chrome.webRequest.onHeadersReceived.addListener(
   function(info) {
-    if(info.statusCode == 104) {
+    if (typeof info.responseHeaders === 'undefined' || info.responseHeaders === null) {
+      return;
+    }
+    if(info.responseHeaders && find_name_value_in_arr("Server","ZKP",info.responseHeaders)) {
       init_ZKP(info.url);
     }
   },
   // filters
   {
     urls: [
-      "https://*/*",
-      "http://*/*"
+      "<all_urls>"
     ],
   },
   // extraInfoSpec
-  []);
+  ["responseHeaders"]);
