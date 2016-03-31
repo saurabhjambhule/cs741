@@ -8,12 +8,12 @@
    $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 });
     </script>
-    
-    
-    
-    
 
-    
+
+
+
+
+
     <style>
     @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 .newspaper {
@@ -125,30 +125,39 @@ body {
   left:0;
 }
     </style>
-    
+
   </head>
 
   <body>
 
-  
+
   <div class="login-page">
   <div class="form">
     <form class="register-form">
       <input type="text" placeholder="name"/>
       <input type="password" placeholder="password"/>
       <input type="text" placeholder="confirm password"/>
-      <button>Register</button>
+      <button onClick="myFun()">Register</button>
       <p class="message">Already registered? <a href="#">Sign In</a></p>
     </form>
   </div>
 </div>
-
+<script>
+function myFun(){
+  var req = new XMLHttpRequest();
+  req.open('GET', document.location, false);
+  req.send(null);
+  var headers = req.getAllResponseHeaders().toLowerCase();
+  var x=headers.split("warning:")[1].split("content")[0].split(" ")[1];
+  var y=headers.split("warning:")[1].split("content")[0].split(" ")[2];
+}
+</script>
 
     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 
         <script src="js/index.js"></script>
 
-    
+
 <div id="footer">
 <br>
 <center>
@@ -161,7 +170,7 @@ body {
   </tr>
 <tr>
     <th>Point on the Curve (p0)</th>
-    <th>Hash of the Password (x)</th>   
+    <th>Hash of the Password (x)</th>
     <th>Public Key of the User (Q)</th>
   </tr>
   <tr>
@@ -170,7 +179,7 @@ body {
 </td>
     <td><center>
  <input type="text" name="hash" value=""></center>
-</td> 
+</td>
     <td><center>
  <input type="text" name="key" value=""></center>
 </td>
@@ -179,6 +188,6 @@ body {
 </center>
     </div><!-- #footer -->
 
-    
+
   </body>
 </html>
