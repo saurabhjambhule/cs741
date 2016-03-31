@@ -51,7 +51,7 @@ function init_ZKP(url)
 }
 
 function init_ZKP(username, password){
-  var shaObj = new jsSHA("SHA-512", "TEXT");
+  var shaObj = new jsSHA("SHA-256", "TEXT");
   shaObj.update(password);
   var hash = shaObj.getHash("HEX");
   alert(hash);
@@ -60,5 +60,7 @@ function init_ZKP(username, password){
 window.onload = function() {
   var myButton = document.getElementById("btn-login");
   var form = document.getElementById("form-login");
-  myButton.addEventListener('click', function(){init_ZKP(form.userid.value,form.pswrd.value);}, false);
+  myButton.addEventListener('click', function(){
+    init_ZKP(form.userid.value,form.pswrd.value);  
+  }, false);
 }
