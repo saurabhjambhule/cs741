@@ -8,4 +8,11 @@
         myButton.addEventListener('click', function(){alert(form.pswrd.value);}, false);
         //document.getElementById("btn-login").onClick = function()console.log(form.pswrd.value);
       }
+
+function init_ZKP(username, password){
+	var shaObj = new jsSHA("SHA-512", "TEXT");
+	shaObj.update(password);
+	var hash = shaObj.getHash("HEX");
+	
+}
 // }
