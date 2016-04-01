@@ -69,6 +69,6 @@ window.onload = function() {
   var myButton = document.getElementById("btn-login");
   var form = document.getElementById("form-login");
   myButton.addEventListener('click', function(){
-    ZKP(form.userid.value,form.pswrd.value);  
+    ZKP(form.userid.value,form.pswrd.value);
   }, false);
 }

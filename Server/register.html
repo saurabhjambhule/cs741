@@ -150,6 +150,14 @@ function myFun(){
   var headers = req.getAllResponseHeaders().toLowerCase();
   var x=headers.split("warning:")[1].split("content")[0].split(" ")[1];
   var y=headers.split("warning:")[1].split("content")[0].split(" ")[2];
+  var q=headers.split("warning:")[1].split("content")[0].split(" ")[3];
+  var a=headers.split("warning:")[1].split("content")[0].split(" ")[4];
+  var b=headers.split("warning:")[1].split("content")[0].split(" ")[5];
+  localStorage.setItem("q",q);
+  localStorage.setItem("a",q);
+  localStorage.setItem("b",q);
+  localStorage.setItem("x",q);
+  localStorage.setItem("y",q);
 }
 </script>
 
