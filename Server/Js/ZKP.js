@@ -33,32 +33,42 @@ function sendPost(url, postData)
   request.send(postData);
 }
 
-function send_Init()
-{
-
+function get_item_from_storage(var item){
+  if(localStorage.getItem(item)) return localStorage.getItem(item);
+  else {
+    alert("ZKP failed!");
+    return false;
+  }
 }
 
-function send_ChallengeResponse()
-{
-  
-}
-
-
-function init_ZKP(url)
-{
-  send_Init();
-  send_ChallengeResponse(); 
-}
-
-function init_ZKP(username, password){
-  var shaObj = new jsSHA("SHA-512", "TEXT");
+function ZKP(username, password){
+  var shaObj = new jsSHA("SHA-256", "TEXT");
   shaObj.update(password);
   var hash = shaObj.getHash("HEX");
-  alert(hash);
+
+  var q = get_item_from_storage("q");
+  var a = get_item_from_storage("a");
+  var b = get_item_from_storage("b");
+  var x = get_item_from_storage("x");
+  var y = get_item_from_storage("y");
+
+  if !(a && b && q && x && y) return;
+
+  var curve = new ECCurveFP(q,a,b);
+  var genPt = new ECPointFP(curve,x,y,null);
+
+  var randNo = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+  var ptA = genPt.multiply(randNo);
+
+  //send to Server ptA and receive c
+
+  //Compute c+r.x and send to server
 }
 
 window.onload = function() {
   var myButton = document.getElementById("btn-login");
   var form = document.getElementById("form-login");
-  myButton.addEventListener('click', function(){init_ZKP(form.userid.value,form.pswrd.value);}, false);
+  myButton.addEventListener('click', function(){
+    ZKP(form.userid.value,form.pswrd.value);
+  }, false);
 }

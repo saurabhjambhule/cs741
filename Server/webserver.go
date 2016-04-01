@@ -4,7 +4,7 @@ import (
 	"crypto/elliptic"
 	"encoding/binary"
 	"fmt"
-	"io"
+	// "io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -12,7 +12,14 @@ import (
 )
 
 func HandlePage(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "hello, world\n")
+	// io.WriteString(w, "hello, world\n")
+	title := r.URL.Path[len("/"):]
+	p, err := loadPage(title)
+	if err != nil {
+		p = &Page{Title: title}
+	}
+	t, _ := template.ParseFiles(title)
+	t.Execute(w, p)
 }
 
 func HandleRegister(w http.ResponseWriter, r *http.Request) {

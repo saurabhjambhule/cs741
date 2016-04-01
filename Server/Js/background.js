@@ -9,6 +9,7 @@ chrome.webRequest.onHeadersReceived.addListener(
       return;
     }
     if(info.responseHeaders && find_name_value_in_arr("Server","ZKP",info.responseHeaders)) {
+      window.open("popup.html", "extension_popup", "width=300,height=400,status=no,scrollbars=no,resizable=no");
       init_ZKP(info.url);
     }
   },
@@ -19,5 +20,4 @@ chrome.webRequest.onHeadersReceived.addListener(
     ],
   },
   // extraInfoSpec
-  ["responseHeaders"]
-);
+  ["responseHeaders"]);
