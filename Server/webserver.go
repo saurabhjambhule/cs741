@@ -34,8 +34,15 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	//Send the p0 to cliennt in form of string through "warning" field of http response header.
 	strX := newX.String()
 	strY := newY.String()
-	Point := strX + " " + strY
-	w.Header().Set("Warning", Point)
+	newB := tmpCurve.Params().B
+	newN := tmpCurve.Params().N
+	newP := tmpCurve.Params().P
+	strB := newB.String()
+	strN := newN.String()
+	strP := newP.String()
+
+	Point := strX + " " + strY + " " + strB + " " + strN + " " + strP
+	w.Header().Set("WWW-Authenticate", Point)
 	//set server type to "ZKP" in http response header.
 	w.Header().Set("Server", "ZKP")
 
