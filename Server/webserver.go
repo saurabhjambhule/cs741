@@ -25,8 +25,11 @@ func HandlePage(w http.ResponseWriter, r *http.Request) {
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	tmpCurve := elliptic.P256() //generaet elliptic cureve (256b)
 	//Get generator i.e. X and Y base points.
-	//fmt.Println(tmpCurve.Params().Gx)
-	//fmt.Println(tmpCurve.Params().Gy)
+	// fmt.Println(tmpCurve.Params().Gx)
+	// fmt.Println(tmpCurve.Params().Gy)
+	// fmt.Println(tmpCurve.Params().B)
+	// fmt.Println(tmpCurve.Params().N)
+	// fmt.Println(tmpCurve.Params().P)
 
 	randNo := rand.Uint32() //generate random number to generate random point on the curve
 	//cunver the randomNo to bytes.
