@@ -1,240 +1,193 @@
 <!DOCTYPE html>
-<html >
-  <head>
+<html>
+
+<head>
     <meta charset="UTF-8">
     <title>Registration Page</title>
-    <script type="text/javascript">
-      $('.message a').click(function(){
-   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-});
-    </script>
-
-
-
-
-
-
     <style>
     @import url(https://fonts.googleapis.com/css?family=Roboto:300);
-.newspaper {
-    -webkit-column-count: 2; /* Chrome, Safari, Opera */
-    -moz-column-count: 2; /* Firefox */
-    column-count: 2;
-    -webkit-column-gap: 40px; /* Chrome, Safari, Opera */
-    -moz-column-gap: 40px; /* Firefox */
-    column-gap: 40px;
-}
-
-.login-page {
-  width: 360px;
-  padding: 8% 0 0;
-  margin: auto;
-}
-.form {
-  position: relative;
-  z-index: 1;
-  background: #FFFFFF;
-  max-width: 360px;
-  margin: 0 auto 100px;
-  padding: 45px;
-  text-align: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
-}
-.form input {
-  font-family: "Roboto", sans-serif;
-  outline: 0;
-  background: #f2f2f2;
-  width: 100%;
-  border: 0;
-  margin: 0 0 15px;
-  padding: 15px;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-.form button {
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  outline: 0;
-  background: #4CAF50;
-  width: 100%;
-  border: 0;
-  padding: 15px;
-  color: #FFFFFF;
-  font-size: 14px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-.form button:hover,.form button:active,.form button:focus {
-  background: #43A047;
-}
-.form .message {
-  margin: 15px 0 0;
-  color: #b3b3b3;
-  font-size: 12px;
-}
-.form .message a {
-  color: #4CAF50;
-  text-decoration: none;
-}
-
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 300px;
-  margin: 0 auto;
-}
-.container:before, .container:after {
-  content: "";
-  display: block;
-  clear: both;
-}
-.container .info {
-  margin: 50px auto;
-  text-align: center;
-}
-.container .info h1 {
-  margin: 0 0 15px;
-  padding: 0;
-  font-size: 36px;
-  font-weight: 300;
-  color: #1a1a1a;
-}
-.container .info span {
-  color: #4d4d4d;
-  font-size: 12px;
-}
-.container .info span a {
-  color: #000000;
-  text-decoration: none;
-}
-.container .info span .fa {
-  color: #EF3B3A;
-}
-body {
-    background-color: #778899;
-}
-
-
-#footer {
-  background:   #F5F5F5;
-  width:100%;
-  height:90px;
-  position:absolute;
-  bottom:0;
-  left:0;
-}
+    .newspaper {
+        -webkit-column-count: 2;
+        /* Chrome, Safari, Opera */
+        -moz-column-count: 2;
+        /* Firefox */
+        column-count: 2;
+        -webkit-column-gap: 40px;
+        /* Chrome, Safari, Opera */
+        -moz-column-gap: 40px;
+        /* Firefox */
+        column-gap: 40px;
+    }
+    
+    .login-page {
+        width: 360px;
+        padding: 8% 0 0;
+        margin: auto;
+    }
+    
+    .form {
+        position: relative;
+        z-index: 1;
+        background: #FFFFFF;
+        max-width: 360px;
+        margin: 0 auto 100px;
+        padding: 45px;
+        text-align: center;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    }
+    
+    .form input {
+        font-family: "Roboto", sans-serif;
+        outline: 0;
+        background: #f2f2f2;
+        width: 100%;
+        border: 0;
+        margin: 0 0 15px;
+        padding: 15px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    
+    .form button {
+        font-family: "Roboto", sans-serif;
+        text-transform: uppercase;
+        outline: 0;
+        background: #4CAF50;
+        width: 100%;
+        border: 0;
+        padding: 15px;
+        color: #FFFFFF;
+        font-size: 14px;
+        -webkit-transition: all 0.3 ease;
+        transition: all 0.3 ease;
+        cursor: pointer;
+    }
+    
+    .form button:hover,
+    .form button:active,
+    .form button:focus {
+        background: #43A047;
+    }
+    
+    .form .message {
+        margin: 15px 0 0;
+        color: #b3b3b3;
+        font-size: 12px;
+    }
+    
+    .form .message a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+    
+    .container {
+        position: relative;
+        z-index: 1;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .container:before,
+    .container:after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+    
+    .container .info {
+        margin: 50px auto;
+        text-align: center;
+    }
+    
+    .container .info h1 {
+        margin: 0 0 15px;
+        padding: 0;
+        font-size: 36px;
+        font-weight: 300;
+        color: #1a1a1a;
+    }
+    
+    .container .info span {
+        color: #4d4d4d;
+        font-size: 12px;
+    }
+    
+    .container .info span a {
+        color: #000000;
+        text-decoration: none;
+    }
+    
+    .container .info span .fa {
+        color: #EF3B3A;
+    }
+    
+    body {
+        background-color: #778899;
+    }
+    
+    #footer {
+        background: #F5F5F5;
+        width: 100%;
+        height: 90px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
     </style>
+</head>
 
-  </head>
-
-  <body>
-
-
-  <div class="login-page">
-  <div class="form">
-    <form class="register-form">
-      <input type="text" name="userid" placeholder="name"/>
-      <input type="password" name="psswd" placeholder="password"/>
-      <input type="text" name="cpsswd" placeholder="confirm password"/>
-      <button onClick="myFun(this.form
-      )">Register</button>
-      <p class="message">Already registered? <a href="#">Sign In</a></p>
-    </form>
-  </div>
-</div>
-<script type="text/javascript" src="Js/jsSHA/sha256.js"></script>
-<script>
-
-function sendPost(url, postData)
-{
-  var method = "POST";
-  var async = true;
-  var request = new XMLHttpRequest();
-
-  request.onload = function () {
-     var status = request.status;
-     var data = request.responseText;
-  }
-
-  request.open(method, url, async);
-  request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-  request.send(postData);
-}
-
-function myFun(form){
-
-  var pass1 = form.psswd.value;
-  var pass2 = form.cpsswd.value;
-  //alert(pass1 + "karan here" + pass2);
-  //alert(pass1 === pass2);
-  if(!(pass1===pass2)){
-    alert("Password mismatch!!");
-    return;
-  }
-  var req = new XMLHttpRequest();
-  req.open('GET', document.location, false);
-  req.send(null);
-  var headers = req.getAllResponseHeaders().toLowerCase();
-  var data = headers.split("warning: ")[1].split("content")[0].split(" ");
-  // ECC(data);
-  // localStorage.setItem("data",data);
-  var shaObj = new jsSHA("SHA-256", "TEXT");
-  shaObj.update(form.psswd.value);
-  var hash = shaObj.getHash("HEX");
-  var url = window.location.href;
-  sendPost(url, hash);
-}
-function ECC(data){
-  var x=data[0];
-  var y=data[1];
-  var q=data[2];
-  var a=data[3];
-  var b=data[4];
-  localStorage.setItem("q",q);
-  localStorage.setItem("a",a);
-  localStorage.setItem("b",b);
-  localStorage.setItem("x",x);
-  localStorage.setItem("y",y);
-}
-
-</script>
-
+<body>
+    <div class="login-page">
+        <div class="form">
+            <form id="register-form">
+                <input type="text" name="userid" placeholder="name" />
+                <input type="password" name="psswd" placeholder="password" />
+                <input type="password" name="cpsswd" placeholder="confirm password" />
+                <!-- <button onClick="register_ZKP(document.getElementByID('register-form'))">Register</button> -->
+                <p class="message">Already registered? <a href="#">Sign In</a></p>
+            </form>
+            <button onClick="register_ZKP(document.getElementById('register-form'))">Register</button>
+        </div>
+    </div>
+    <script type="text/javascript" src="Js/jsSHA/sha256.js"></script>
+    <script type="text/javascript" src="Js/ZKP.js"></script>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <div id="footer">
+        <br>
+        <center>
+            <table style="width:80%">
+                <col width="100">
+                <col width="100">
+                <col width="100">
+                <tr>
+                    <th colspan="3"></th>
+                </tr>
+                <tr>
+                    <th>Point on the Curve (p0)</th>
+                    <th>Hash of the Password (x)</th>
+                    <th>Public Key of the User (Q)</th>
+                </tr>
+                <tr>
+                    <td>
+                        <center>
+                            <input type="text" name="point" value="">
+                        </center>
+                    </td>
+                    <td>
+                        <center>
+                            <input type="text" name="hash" value="">
+                        </center>
+                    </td>
+                    <td>
+                        <center>
+                            <input type="text" name="key" value="">
+                        </center>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </div>
+    <!-- #footer -->
+</body>
 
-        <script src="js/index.js"></script>
-
-
-<div id="footer">
-<br>
-<center>
-<table style="width:80%">
-<col width="100">
-<col width="100">
-<col width="100">
-<tr>
-    <th colspan="3"></th>
-  </tr>
-<tr>
-    <th>Point on the Curve (p0)</th>
-    <th>Hash of the Password (x)</th>
-    <th>Public Key of the User (Q)</th>
-  </tr>
-  <tr>
-    <td><center>
- <input type="text" name="point" value=""></center>
-</td>
-    <td><center>
- <input type="text" name="hash" value=""></center>
-</td>
-    <td><center>
- <input type="text" name="key" value=""></center>
-</td>
-  </tr>
-</table>
-</center>
-    </div><!-- #footer -->
-
-
-  </body>
 </html>
