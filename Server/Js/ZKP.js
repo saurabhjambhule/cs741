@@ -10,7 +10,7 @@ function fetchJSONFile(url, postData, callback) {
     };
     httpRequest.open('POST', url, false);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    httpRequest.send(postData); 
+    httpRequest.send(postData);
 }
 
 function get_item_from_storage(item) {
@@ -36,33 +36,31 @@ function ECC_save_init(data) {
     localStorage.setItem("y", y);
 }
 
+function fromHex(s) { return new BigInteger(s, 16); }
 function ECC_get_init() {
-    return "Initial stuff";
 
-    
-    //alert(hash);
-    // var q = get_item_from_storage("q");
-    // var a = get_item_from_storage("a");
-    // var b = get_item_from_storage("b");
-    // var x = get_item_from_storage("x");
-    // var y = get_item_from_storage("y");
-    // var q = new BigInteger("115792089210356248762697446949407573530086143415290314195533631308867097853951",10);
-    // var a = new BigInteger("115792089210356248762697446949407573530086143415290314195533631308867097853948",10);
-    // var b = new BigInteger("2566147732822008883082883111252954275569652563499607847177203519627466711115",10);
-    // var x = new BigInteger("48439561293906451759052585252797914202762949526041747995844080717082404635286",10);
-    // var y = new BigInteger("36134250956749795798585127919587881956611106672985015071877198253568414405109",10 );
-    // var q = 11;
-    // var a = 2;
-    // var b = 3;
-    // var x = 4;
-    // var y = 7;
-    // var curve = new ECCurveFP(q, a, b);
-    // alert(curve.q);
+  var p = fromHex("FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF");
+   var a = fromHex("FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC");
+   var b = fromHex("5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B");
+   //byte[] S = Hex.decode("C49D360886E704936A6678E1139D26B7819F7E90");
+   var n = fromHex("FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551");
+   var h = BigInteger.ONE;
+   var curve = new ECCurveFp(p, a, b);
+   var G = curve.decodePointHex("04"
+                + "188DA80EB03090F67CBF20EB43A18800F4FF0AFD82FF1012"
+                + "07192B95FFC8DA78631011ED6B24CDD573F977A11E794811");
+   //var genPt = new ECPointFP(curve, x, y, null);
+//  alert(curve.q);
     // var genPt = new ECPointFP(curve, x, y, null);
+    //var t= pointFpGetX();
 
-    // var randNo = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-    // var ptA = genPt.multiply(randNo);
-    //alert(ptA);
+
+    var randNo = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+    var hexString = randNo.toString(16);
+    var randNo=fromHex(hexString);
+    var ptA = G.multiply(randNo);
+    alert(ptA;
+      return "Initial stuff";
     //send to Server ptA and receive c
 
     //Compute c+r.x and send to server
@@ -77,7 +75,7 @@ function ECC_create_reg_value(hash) {
 }
 
 function get_ZKP_inits() {
-    return ECC_get_int();
+    return ECC_get_init();
 }
 
 function save_ZKP_inits(data) {
@@ -100,14 +98,14 @@ function login_ZKP() {
     var shaObj = new jsSHA("SHA-256", "TEXT");
     shaObj.update(password);
     var hash = shaObj.getHash("HEX");
-
+    //alert("in");
     var data = get_ZKP_inits();
     var req = new XMLHttpRequest();
     req.open('POST', document.location, false);
     req.send("state=login&step=0&login_init_data=" + data.toString());
 
     var challenge = JSON.parse(req.responseText);
-
+    //var challenge = "temp";
     var response = generate_ZKP_response(challenge);
     req = new XMLHttpRequest();
     req.open('POST', document.location, false);
