@@ -3,26 +3,28 @@ package main
 import (
 	"crypto/elliptic"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
+	"io"
+	"strings"
 	// "io"
 	"log"
 	"math/rand"
 	"net/http"
 	"text/template"
+
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
-func HandlePage(w http.ResponseWriter, r *http.Request) {
-	// io.WriteString(w, "hello, world\n")
-	title := r.URL.Path[len("/"):]
-	p, err := loadPage(title)
-	if err != nil {
-		p = &Page{Title: title}
-	}
-	t, _ := template.ParseFiles(title)
-	t.Execute(w, p)
+type PreInfo struct {
+	X string `json:"x"`
+	Y string `json:"y"`
+	Q string `json:"q"`
+	A string `json:"a"`
+	B string `json:"b"`
 }
 
-func HandleRegister(w http.ResponseWriter, r *http.Request) {
+func HandleRegisterECC(w http.ResponseWriter, r *http.Request) {
 	tmpCurve := elliptic.P256() //generaet elliptic cureve (256b)
 	//Get generator i.e. X and Y base points.
 	// fmt.Println(tmpCurve.Params().Gx)
@@ -66,7 +68,7 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
-func HandleLogin(w http.ResponseWriter, r *http.Request) {
+func HandleLoginECC(w http.ResponseWriter, r *http.Request) {
 	//This will send client login html page.
 	title := r.URL.Path[len("/"):]
 	p, err := loadPage(title)
@@ -77,14 +79,90 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+func HandleRegisterBasic(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("IN")
+	r.ParseMultipartForm(int64(100))
+	step := strings.TrimSpace(r.PostFormValue("step"))
+	state := strings.TrimSpace(r.PostFormValue("state"))
+	if step == "0" {
+		fmt.Println(step, ":", state)
+
+		w.Header().Set("Content-Type", "application/json")
+		preInfo, _ := json.Marshal(PreInfo{"1", "2", "3", "4", "5"})
+		//fmt.Println(string(preInfo))
+		io.WriteString(w, string(preInfo))
+	}
+	if step == "1" {
+		fmt.Println(step, "::", state)
+		pubKey := strings.TrimSpace(r.PostFormValue("pub_key"))
+		fmt.Println(pubKey)
+		uname := strings.TrimSpace(r.PostFormValue("uname"))
+		fmt.Println(uname)
+		storeData(uname, pubKey)
+		//_, _ = getData(uname)
+	}
+}
+
+func HandleLoginBasic(w http.ResponseWriter, r *http.Request) {
+	//This will send client login html page.
+	title := r.URL.Path[len("/"):]
+	p, err := loadPage(title)
+	if err != nil {
+		p = &Page{Title: title}
+	}
+	t, _ := template.ParseFiles("login.html")
+	t.Execute(w, p)
+}
+
+func HandlePage(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/"):]
+	p, err := loadPage(title)
+	if err != nil {
+		p = &Page{Title: title}
+	}
+	t, _ := template.ParseFiles(title)
+	t.Execute(w, p)
+}
+
+func HandleICon(w http.ResponseWriter, r *http.Request) {
+}
+
+func storeData(uname string, pubKey string) {
+	db, err := leveldb.OpenFile("data.db", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	err = db.Put([]byte(uname), []byte(pubKey), nil)
+}
+
+func getData(uname string) (bool, string) {
+	db, err := leveldb.OpenFile("data.db", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	iter := db.NewIterator(nil, nil)
+	for iter.Next() {
+		key := iter.Key()
+		if string(key) == uname {
+			value := iter.Value()
+			fmt.Printf("uname: %s | pubKey: %s\n", key, value)
+			return true, string(value)
+		}
+	}
+	return false, "not found"
+}
+
 func main() {
 	/* Handler: Request handling logic and response generation. */
-	// This will call function HandlePage, if link is like "http://0.0.0.0:9090".
 	http.HandleFunc("/", HandlePage)
-	// This will call function HandleLogin, if link is like "http://0.0.0.0:9090/login".
-	http.HandleFunc("/login", HandleLogin)
-	// This will call function HandleRegister, if link is like "http://0.0.0.0:9090/register".
-	http.HandleFunc("/register", HandleRegister)
+	http.HandleFunc("/favicon.ico", HandleICon)
+	http.HandleFunc("/login-basic", HandleLoginBasic)
+	http.HandleFunc("/register-basic", HandleRegisterBasic)
+	http.HandleFunc("/login-ecc", HandleLoginECC)
+	http.HandleFunc("/register-ecc", HandleRegisterECC)
 
 	err := http.ListenAndServe(":9090", nil) //set listen port to 9090
 	if err != nil {

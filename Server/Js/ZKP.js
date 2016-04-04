@@ -22,11 +22,13 @@ function get_item_from_storage(item) {
 }
 
 function ECC_save_init(data) {
-    var x = data[0];
-    var y = data[1];
-    var q = data[2];
-    var a = data[3];
-    var b = data[4];
+    alert(JSON.stringify(data));
+    var x = data.x;
+    var y = data.y;
+    var q = data.q;
+    var a = data.a;
+    var b = data.b;
+
     localStorage.setItem("q", q);
     localStorage.setItem("a", a);
     localStorage.setItem("b", b);
@@ -122,22 +124,33 @@ function register_ZKP(form) {
     }
 
     var req = new XMLHttpRequest();
-    req.open('POST', document.location, false);
+    req.open('POST', "register-basic", false);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    /* --Using Call back function --
+    req.onreadystatechange = function() {
+    if (req.readyState == 4 && req.status == 200) {
+        var data = JSON.parse(req.responseText);
+        save_ZKP_inits(data);
+        }
+    }; */
+
     req.send("state=register&step=0");
-
     var data = JSON.parse(req.responseText);
-
     //Save data
     save_ZKP_inits(data);
 
     var shaObj = new jsSHA("SHA-256", "TEXT");
     shaObj.update(form.psswd.value);
+    var uname = form.userid.value;
     var hash = shaObj.getHash("HEX");
 
     //Send data
     var reg_value = create_ZKP_reg_value(hash);
+    var req1 = new XMLHttpRequest();
 
-    var req = new XMLHttpRequest();
-    req.open('POST', document.location, false);
-    req.send("state=register&step=1&reg_value=" + reg_value.toString());
+    req1.open('POST', "register-basic", false);
+    req1.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    req1.send("state=register&step=1&uname="+ uname +"&pub_key=" + reg_value.toString());
+
 }
