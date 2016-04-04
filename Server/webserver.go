@@ -2,17 +2,20 @@ package main
 
 import (
 	"crypto/elliptic"
+	"crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
 
 	"fmt"
 	"io"
 	"log"
+	"math/big"
 	"math/rand"
 	"net/http"
 	"strings"
 	"text/template"
 
+	"github.com/fatih/structs"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
@@ -22,6 +25,16 @@ type PreInfo struct {
 	Q string `json:"q"`
 	A string `json:"a"`
 	B string `json:"b"`
+}
+
+type CInfo struct {
+	C string `json:"c"`
+}
+
+type userVerify struct {
+	A []byte
+	G []byte
+	C []byte
 }
 
 func HandleRegisterECC(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +98,38 @@ func HandleLoginECC(w http.ResponseWriter, r *http.Request) {
 func HandleRegisterBasic(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("HandleRegisterBasic")
 	tmpCurve := elliptic.P256()
+	r.ParseMultipartForm(int64(100))
+	step := strings.TrimSpace(r.PostFormValue("step"))
+	//state := strings.TrimSpace(r.PostFormValue("state"))
+	if step == "0" {
+		//fmt.Println(step, ":", state)
+		w.Header().Set("Content-Type", "application/json")
+		preInfo, _ := json.Marshal(PreInfo{tmpCurve.Params().Gx.String(), tmpCurve.Params().Gy.String(), tmpCurve.Params().P.String(), tmpCurve.Params().B.String(), tmpCurve.Params().N.String()})
+		//fmt.Println(string(preInfo))
+		io.WriteString(w, string(preInfo))
+	}
+	if step == "1" {
+		//fmt.Println(step, "::", state)
+		pubKey := strings.TrimSpace(r.PostFormValue("pub_key"))
+		fmt.Println(pubKey)
+		uname := strings.TrimSpace(r.PostFormValue("uname"))
+		key := strings.Split(pubKey, ",")
+		pX := new(big.Int)
+		pY := new(big.Int)
+		pX.SetString(key[0], 10)
+		pY.SetString(key[1], 10)
+		dataB = elliptic.Marshal(tmpCurve, pX, pY)
+		fmt.Println(">>>>>>>", uname)
+		fmt.Println(">>>>>>>", dataB)
 
+		storeData(uname, dataB)
+		_, _ = getData(uname)
+	}
+}
+
+func HandleLoginBasic(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("HandleLoginBasic")
+	tmpCurve := elliptic.P256()
 	r.ParseMultipartForm(int64(100))
 	step := strings.TrimSpace(r.PostFormValue("step"))
 	state := strings.TrimSpace(r.PostFormValue("state"))
@@ -98,24 +142,62 @@ func HandleRegisterBasic(w http.ResponseWriter, r *http.Request) {
 	}
 	if step == "1" {
 		fmt.Println(step, "::", state)
-		pubKey := strings.TrimSpace(r.PostFormValue("pub_key"))
-		fmt.Println(pubKey)
-		uname := strings.TrimSpace(r.PostFormValue("uname"))
-		fmt.Println(uname)
-		storeData(uname, pubKey)
-		_, _ = getData(uname)
-	}
-}
+		rand := strings.TrimSpace(r.PostFormValue("login_init_data"))
+		fmt.Println(">>", rand)
 
-func HandleLoginBasic(w http.ResponseWriter, r *http.Request) {
-	//This will send client login html page.
-	title := r.URL.Path[len("/"):]
-	p, err := loadPage(title)
-	if err != nil {
-		p = &Page{Title: title}
+		key := strings.Split(rand, ",")
+		pX := new(big.Int)
+		pY := new(big.Int)
+		pX.SetString(key[0], 10)
+		pY.SetString(key[1], 10)
+		dataA = elliptic.Marshal(tmpCurve, pX, pY)
+
+		uname := strings.TrimSpace(r.PostFormValue("uname"))
+		fmt.Println("#####", uname)
+		gByt := elliptic.Marshal(tmpCurve, tmpCurve.Params().Gx, tmpCurve.Params().Gy)
+		dataG = gByt
+		//aByt := []byte(rand)
+		//dataA = aByt
+
+		_, commonPt := getData(uname)
+		dataB = commonPt
+		new1 := append(gByt, commonPt...)
+		new2 := append(new1, dataA...)
+		hash := sha256.Sum256(new2)
+		cByt, _ := json.Marshal(CInfo{string(hash[:32])})
+		dataC = cByt
+		fmt.Println(string(cByt))
+		io.WriteString(w, string(cByt))
+		fmt.Println("s>>>")
 	}
-	t, _ := template.ParseFiles("login.html")
-	t.Execute(w, p)
+	if step == "2" {
+		fmt.Println(step, "::", state)
+
+		m := strings.TrimSpace(r.PostFormValue("login_response_data"))
+
+		fmt.Println("---------->>>>>>")
+		fmt.Println("A- ", string(dataA))
+		fmt.Println("G- ", string(dataG))
+		fmt.Println("C- ", string(dataC))
+		fmt.Println("B- ", string(dataB))
+		fmt.Println("M- ", m)
+		t1, t2 := tmpCurve.ScalarBaseMult([]byte(m))
+		//pY := new(big.Int)
+		//pY.SetString(string(dataC), 10)
+
+		tx, ty := elliptic.Unmarshal(tmpCurve, dataB)
+		t3, t4 := tmpCurve.ScalarMult(tx, ty, dataC)
+
+		//ttt := new(big.Int)
+		//ttt.SetInt64(int64(-1))
+		tt1, tt2 := tmpCurve.ScalarMult(t3, t4, []byte("-1"))
+		t5, t6 := tmpCurve.Add(t1, t2, tt1, tt2)
+
+		final := elliptic.Marshal(tmpCurve, t5, t6)
+		fmt.Println("****>>", string(final), " - ", string(dataA))
+		//pX, pY := tmpCurve.ScalarMult(tmpCurve.Params().Gx, tmpCurve.Params().Gy, []byte(m))
+
+	}
 }
 
 func HandlePage(w http.ResponseWriter, r *http.Request) {
@@ -131,16 +213,16 @@ func HandlePage(w http.ResponseWriter, r *http.Request) {
 func HandleICon(w http.ResponseWriter, r *http.Request) {
 }
 
-func storeData(uname string, pubKey string) {
+func storeData(uname string, pubKey []byte) {
 	db, err := leveldb.OpenFile("data.db", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	err = db.Put([]byte(uname), []byte(pubKey), nil)
+	err = db.Put([]byte(uname), pubKey, nil)
 }
 
-func getData(uname string) (bool, string) {
+func getData(uname string) (bool, []byte) {
 	db, err := leveldb.OpenFile("data.db", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -150,16 +232,22 @@ func getData(uname string) (bool, string) {
 	iter := db.NewIterator(nil, nil)
 	for iter.Next() {
 		key := iter.Key()
+		fmt.Println(string(key), " - ", uname)
 		if string(key) == uname {
 			value := iter.Value()
 			fmt.Printf("uname: %s | pubKey: %s\n", key, value)
-			return true, string(value)
+			return true, value
 		}
 	}
-	return false, "not found"
+	return false, nil
 }
 
+var vInfo *structs.Struct
+var dataG, dataA, dataC, dataB []byte
+
 func main() {
+	vvInfo := &userVerify{A: nil, G: nil, C: nil}
+	vInfo = structs.New(vvInfo)
 	/* Handler: Request handling logic and response generation. */
 	http.HandleFunc("/", HandlePage)
 	http.HandleFunc("/favicon.ico", HandleICon)

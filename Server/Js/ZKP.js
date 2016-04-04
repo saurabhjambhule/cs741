@@ -25,14 +25,12 @@ function ECC_get_init(gen) {
 
 function ECC_gen_response(challenge, hash) {
     var r = fromHex(localStorage.getItem("rand"));
-    var c = fromDec(challenge);
+    var c = fromDec(challenge.c);
+    alert(c)
     var x = fromHex(hash);
-    var multres;
-    x.multiplyTo(c,multres);
-    var addres;
-    multres.SubTo(r.negate(),addres);
-    var result = addres.mod(p);
-    return result.toString(10);
+    x.multiply(c);
+    x.add(r);
+    return x.mod(p).toString(10);
 }
 
 function ECC_create_reg_value(hash) {
@@ -60,6 +58,7 @@ function create_ZKP_reg_value(hash) {
 }
 
 function login_ZKP() {
+        alert("hi");
     var form = document.getElementById("form-login");
     var username = form.userid.value;
     var password = form.pswrd.value;
@@ -69,23 +68,27 @@ function login_ZKP() {
     var hash = shaObj.getHash("HEX");
 
     var req = new XMLHttpRequest();
-    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.open('POST', "login-basic", false);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.send("state=login&step=0");
     var reply = JSON.parse(req.responseText);
 
     var data = get_ZKP_inits(reply);
     var req = new XMLHttpRequest();
-    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.open('POST', "login-basic", false);
-    req.send("state=login&step=1&login_init_data=" + data.toString());
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    req.send("state=login&step=1&uname="+username.toString()+"&login_init_data=" + data.toString());
     var challenge = JSON.parse(req.responseText);
 
     var response = generate_ZKP_response(challenge, hash);
+            alert("$$$$")
+
     req = new XMLHttpRequest();
-    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.open('POST', "login-basic", false);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.send("state=login&step=2&login_response_data=" + response.toString());
+        alert("done")
+
 }
 
 function register_ZKP(form) {
