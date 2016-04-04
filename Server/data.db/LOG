@@ -1,20 +1,20 @@
 =============== Apr 4, 2016 (IST) ===============
-20:58:51.885383 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-20:58:51.916493 db@open opening
-20:58:51.932048 version@stat F·[] S·0B[] Sc·[]
-20:58:51.935768 db@janitor F·2 G·0
-20:58:51.936805 db@open done T·19.284943ms
-20:58:51.945711 db@close closing
-20:58:51.946210 db@close done T·493.847µs
+23:38:26.972774 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+23:38:26.981997 db@open opening
+23:38:26.982707 version@stat F·[] S·0B[] Sc·[]
+23:38:26.983809 db@janitor F·2 G·0
+23:38:26.983889 db@open done T·1.846376ms
+23:38:26.984079 db@close closing
+23:38:26.988778 db@close done T·4.683741ms
 =============== Apr 4, 2016 (IST) ===============
-20:58:51.950996 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-20:58:51.971756 version@stat F·[] S·0B[] Sc·[]
-20:58:51.971821 db@open opening
-20:58:51.972266 journal@recovery F·1
-20:58:51.978364 journal@recovery recovering @1
-20:58:51.995422 memdb@flush created L0@2 N·1 S·184B "saurabh,v1":"saurabh,v1"
-20:58:52.016159 version@stat F·[1] S·184B[184B] Sc·[0.25]
-20:58:52.019093 db@janitor F·3 G·0
-20:58:52.019636 db@open done T·47.290654ms
-20:58:52.029382 db@close closing
-20:58:52.029563 db@close done T·176.514µs
+23:38:26.989340 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+23:38:26.989739 version@stat F·[] S·0B[] Sc·[]
+23:38:26.989769 db@open opening
+23:38:26.989896 journal@recovery F·1
+23:38:26.990545 journal@recovery recovering @1
+23:38:26.991496 memdb@flush created L0@2 N·1 S·242B "ss,v1":"ss,v1"
+23:38:26.992085 version@stat F·[1] S·242B[242B] Sc·[0.25]
+23:38:26.993518 db@janitor F·3 G·0
+23:38:26.993554 db@open done T·3.772149ms
+23:38:26.993746 db@close closing
+23:38:26.994013 db@close done T·259.551µs

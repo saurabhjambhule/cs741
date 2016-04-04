@@ -4,13 +4,13 @@ import (
 	"crypto/elliptic"
 	"encoding/binary"
 	"encoding/json"
+
 	"fmt"
 	"io"
-	"strings"
-	// "io"
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"github.com/syndtr/goleveldb/leveldb"
@@ -33,15 +33,17 @@ func HandleRegisterECC(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(tmpCurve.Params().N)
 	// fmt.Println(tmpCurve.Params().P)
 
+	//fmt.Println("X and Y points: ", tmpCurve.Params().Gx, tmpCurve.Params().Gy)
+
 	randNo := rand.Uint32() //generate random number to generate random point on the curve
 	//cunver the randomNo to bytes.
 	bs := make([]byte, 4)
 	binary.LittleEndian.PutUint32(bs, randNo)
-	fmt.Println("Random Number (B): ", bs)
+	//fmt.Println("Random Number (B): ", bs)
 
 	newX, newY := tmpCurve.ScalarBaseMult(bs) //generate p0 random point on the curve using randomNo
-	fmt.Println("X and Y points: ", newX, newY)
-	fmt.Println(tmpCurve.IsOnCurve(newX, newY)) //check whether the point is on curve or not
+	//fmt.Println("X and Y points: ", newX, newY)
+	//fmt.Println(tmpCurve.IsOnCurve(newX, newY)) //check whether the point is on curve or not
 
 	//Send the p0 to cliennt in form of string through "warning" field of http response header.
 	strX := newX.String()
@@ -54,6 +56,7 @@ func HandleRegisterECC(w http.ResponseWriter, r *http.Request) {
 	strP := newP.String()
 
 	Point := strX + " " + strY + " " + strB + " " + strN + " " + strP
+	fmt.Printf("%x\n", Point)
 	w.Header().Set("WWW-Authenticate", Point)
 	//set server type to "ZKP" in http response header.
 	w.Header().Set("Server", "ZKP")
@@ -80,16 +83,17 @@ func HandleLoginECC(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleRegisterBasic(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("IN")
+	fmt.Println("HandleRegisterBasic")
+	tmpCurve := elliptic.P256()
+
 	r.ParseMultipartForm(int64(100))
 	step := strings.TrimSpace(r.PostFormValue("step"))
 	state := strings.TrimSpace(r.PostFormValue("state"))
 	if step == "0" {
 		fmt.Println(step, ":", state)
-
 		w.Header().Set("Content-Type", "application/json")
-		preInfo, _ := json.Marshal(PreInfo{"1", "2", "3", "4", "5"})
-		//fmt.Println(string(preInfo))
+		preInfo, _ := json.Marshal(PreInfo{tmpCurve.Params().Gx.String(), tmpCurve.Params().Gy.String(), tmpCurve.Params().P.String(), tmpCurve.Params().B.String(), tmpCurve.Params().N.String()})
+		fmt.Println(string(preInfo))
 		io.WriteString(w, string(preInfo))
 	}
 	if step == "1" {
@@ -99,7 +103,7 @@ func HandleRegisterBasic(w http.ResponseWriter, r *http.Request) {
 		uname := strings.TrimSpace(r.PostFormValue("uname"))
 		fmt.Println(uname)
 		storeData(uname, pubKey)
-		//_, _ = getData(uname)
+		_, _ = getData(uname)
 	}
 }
 
